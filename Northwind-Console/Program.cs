@@ -40,11 +40,11 @@ namespace NorthwindConsole
                     }
                     else if (choice == "2")
                     {
-                        Category category = new Category();
-                        Console.WriteLine("Enter Category Name:");
-                        category.CategoryName = Console.ReadLine();
-                        Console.WriteLine("Enter the Category Description:");
-                        category.Description = Console.ReadLine();
+                            Category category = new Category();
+                            Console.WriteLine("Enter Category Name:");
+                            category.CategoryName = Console.ReadLine();
+                            Console.WriteLine("Enter the Category Description:");
+                            category.Description = Console.ReadLine();
 
                         ValidationContext context = new ValidationContext(category, null, null); // what do I want to validate? = category put category in our context
                         List<ValidationResult> results = new List<ValidationResult>();
@@ -53,14 +53,14 @@ namespace NorthwindConsole
                         if (isValid)
                         {
                             var db = new NorthwindContext();
-                            //                            db.Categories.Add(category); //added in class
-                            //                            var erro = db.GetValidationErrors(); //added in class
-                            //                            if (erro.Any()) //added in class
-                            //                            {
-                            // what to do if there is an error dont save to db do something else
-                            //                            }
+                            db.Categories.Add(category); //added in class
+                            var erro = db.GetValidationErrors(); //added in class
+                            if (erro.Any()) //added in class
+                            {
+                                Console.WriteLine(erro);
+                            }
 
-                            //                            db.SaveChanges(); // added in class
+                           // db.SaveChanges(); // added in class
                             // check for unique name
                             if (db.Categories.Any(c => c.CategoryName == category.CategoryName))
                             {
@@ -71,6 +71,7 @@ namespace NorthwindConsole
                             else
                             {
                                 logger.Info("Validation passed");
+                                db.SaveChanges(); // added in class
                                 // TODO: save category to db
                             }
                         }
@@ -78,9 +79,12 @@ namespace NorthwindConsole
                         {
                             foreach (var result in results)
                             {
-                                logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
+       //                         logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
+                                logger.Error($"{result.ErrorMessage}");
+                                Console.WriteLine($"ERROR: {result.ErrorMessage}");
                             }
                         }
+
                     } else if (choice == "3")
                         {
                             var db = new NorthwindContext();
